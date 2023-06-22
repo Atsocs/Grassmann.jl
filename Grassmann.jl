@@ -135,7 +135,7 @@ function basis(n::Int, ::Type{String})
     return [element_string(i) for i = 0:2^n-1]
 end
 
-function max_n(vector::GrassmannVector{T}) where {T}
+function maximum_index(vector::GrassmannVector{T}) where {T}
     n = 0
     for (basis_element, coefficient) in vector.data
         n = max(n, maximum(basis_element))
@@ -145,6 +145,6 @@ end
 
 # show GrassmannVector
 function Base.show(io::IO, vector::GrassmannVector{T}) where {T}
-    print_vector(io, vector.data, basis(max_n(vector), String))
+    print_vector(io, vector.data, basis(maximum_index(vector), String))
 end
 end
