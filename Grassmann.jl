@@ -1,3 +1,6 @@
+module Grassmann
+export GrassmannVector, basis
+
 struct GrassmannVector{T}
     data::Dict{Set{Int},T}
     function GrassmannVector{T}(data::Dict{Set{Int},T}) where {T}
@@ -49,8 +52,8 @@ function Base.:+(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where
     return GrassmannVector{T}(result_data)
 end
 
-get_sign(a1::Set, a2::Set) = get_sign(sort!(collect(a1)), sort!(collect(a2)))
-function get_sign(a1::Vector, a2::Vector)
+sign(a1::Set, a2::Set) = sign(sort!(collect(a1)), sort!(collect(a2)))
+function sign(a1::Vector, a2::Vector)
     exchanges = 0
     i = 1
     j = 1
@@ -95,7 +98,7 @@ function Base.:*(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where
             end
 
             basis_element = union(basis_element1, basis_element2)
-            s = get_sign(basis_element1, basis_element2)
+            s = sign(basis_element1, basis_element2)
             coefficient = s * coefficient1 * coefficient2
 
             result.data[basis_element] = get(result.data, basis_element, zero(coefficient)) + coefficient
@@ -112,4 +115,5 @@ Base.eltype(::Type{GrassmannVector{T}}) where {T} = T
 function basis(n::Int, T=Float64)
     @assert n ≥ 0 || error("n should be ≥ 0")
     return [GrassmannVector{T}(Dict(Set([i]) => one(T))) for i = 1:n]
+end
 end
