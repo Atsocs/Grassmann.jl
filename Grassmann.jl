@@ -4,6 +4,7 @@ struct GrassmannVector{T}
         new{T}(data)
     end
     GrassmannVector{T}() where {T} = new(Dict{Set{Int},T}())
+    GrassmannVector{T}(number::T) where {T} = new(Dict(Set{Int}() => number))
 end
 
 function simplify!(vector_data)
@@ -19,9 +20,7 @@ function Base.zero(::Type{GrassmannVector{T}}) where {T}
 end
 
 function Base.one(::Type{GrassmannVector{T}}) where {T}
-    result = GrassmannVector{T}()
-    result.data[Set{Int}()] = one(T)
-    return result
+    return GrassmannVector{T}(one(T))
 end
 
 function Base.:+(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where {T}
