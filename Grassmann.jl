@@ -23,6 +23,20 @@ function Base.one(::Type{GrassmannVector{T}}) where {T}
     return GrassmannVector{T}(one(T))
 end
 
+function Base.:-(vector::GrassmannVector{T}) where {T}
+    result_data = Dict{Set{Int},T}()
+
+    for (basis_element, coefficient) in vector.data
+        result_data[basis_element] = -coefficient
+    end
+
+    return GrassmannVector{T}(result_data)
+end
+
+function Base.:-(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where {T}
+    return vector1 + (-vector2)
+end
+
 function Base.:+(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where {T}
     result_data = copy(vector1.data)
 
@@ -56,6 +70,20 @@ function get_sign(a1::Vector, a2::Vector)
     return exchanges % 2 == 0 ? 1 : -1
 end
 
+Base.:*(number::T, vector::GrassmannVector{T}) where {T} = vector * number
+function Base.:*(vector::GrassmannVector{T}, number::T) where {T}
+    if iszero(number)
+        return GrassmannVector{T}()
+    end
+
+    result_data = Dict{Set{Int},T}()
+
+    for (basis_element, coefficient) in vector.data
+        result_data[basis_element] = coefficient * number
+    end
+
+    return GrassmannVector{T}(result_data)
+end
 
 function Base.:*(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where {T}
     result = GrassmannVector{T}()
@@ -78,6 +106,8 @@ function Base.:*(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where
 
     return result
 end
+
+Base.eltype(::Type{GrassmannVector{T}}) where {T} = T
 
 function basis(n::Int, T=Float64)
     @assert n ≥ 0 || error("n should be ≥ 0")
