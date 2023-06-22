@@ -2,7 +2,7 @@ module Grassmann
 export GrassmannVector, basis
 
 import Base: zero, one, -, +, *, eltype
-include("./print_vector.jl")
+include("./lib/print_vector.jl")
 
 struct GrassmannVector{T}
     data::Dict{Set{Int},T}
