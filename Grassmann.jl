@@ -1,5 +1,9 @@
 struct GrassmannVector{T}
     data::Dict{Set{Int},T}
+    function GrassmannVector{T}(data::Dict{Set{Int},T}) where {T}
+        new{T}(data)
+    end
+    GrassmannVector{T}() where {T} = new(Dict{Set{Int},T}())
 end
 
 function simplify!(vector_data)
@@ -11,12 +15,13 @@ function simplify!(vector_data)
 end
 
 function Base.zero(::Type{GrassmannVector{T}}) where {T}
-    GrassmannVector{T}(Dict{Set{Int},T}())
+    return GrassmannVector{T}()
 end
 
 function Base.one(::Type{GrassmannVector{T}}) where {T}
-    data = Dict{Set{Int},T}(Set{Int}() => one(T))
-    return GrassmannVector{T}(data)
+    result = GrassmannVector{T}()
+    result.data[Set{Int}()] = one(T)
+    return result
 end
 
 function Base.:+(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where {T}
@@ -54,7 +59,7 @@ end
 
 
 function Base.:*(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where {T}
-    result_data = Dict{Set{Int},T}()
+    result = GrassmannVector{T}()
 
     for (basis_element1, coefficient1) in vector1.data
         for (basis_element2, coefficient2) in vector2.data
@@ -66,13 +71,13 @@ function Base.:*(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where
             s = get_sign(basis_element1, basis_element2)
             coefficient = s * coefficient1 * coefficient2
 
-            result_data[basis_element] = get(result_data, basis_element, zero(coefficient)) + coefficient
+            result.data[basis_element] = get(result.data, basis_element, zero(coefficient)) + coefficient
         end
     end
 
-    simplify!(result_data)
+    simplify!(result.data)
 
-    return GrassmannVector{T}(result_data)
+    return result
 end
 
 function basis(n::Int, T=Float64)
