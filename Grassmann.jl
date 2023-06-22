@@ -120,7 +120,7 @@ function basis(n::Int, T=Float64)
     return [GrassmannVector{T}(Dict(Set([i]) => one(T))) for i = 1:n]
 end
 
-function grassmann_basis(n)
+function basis(n::Int, ::Type{String})
     @assert n ≥ 0 || error("n should be ≥ 0")
     function element_string(i)
         indices = Int[]
@@ -145,7 +145,6 @@ end
 
 # show GrassmannVector
 function Base.show(io::IO, vector::GrassmannVector{T}) where {T}
-    _grassmann_basis = grassmann_basis(max_n(vector))
-    print_vector(io, vector.data, _grassmann_basis)
+    print_vector(io, vector.data, basis(max_n(vector), String))
 end
 end
