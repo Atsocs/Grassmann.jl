@@ -1,6 +1,9 @@
 module Grassmann
 export GrassmannVector, basis
 
+import Base: zero, one, -, +, *, eltype
+include("./print_vector.jl")
+
 struct GrassmannVector{T}
     data::Dict{Set{Int},T}
     function GrassmannVector{T}(data::Dict{Set{Int},T}) where {T}
@@ -115,5 +118,34 @@ Base.eltype(::Type{GrassmannVector{T}}) where {T} = T
 function basis(n::Int, T=Float64)
     @assert n ≥ 0 || error("n should be ≥ 0")
     return [GrassmannVector{T}(Dict(Set([i]) => one(T))) for i = 1:n]
+end
+
+function grassmann_basis(n)
+    @assert n ≥ 0 || error("n should be ≥ 0")
+    function element_string(i)
+        indices = Int[]
+        for j = 0:n-1
+            if i & (1 << j) != 0
+                push!(indices, j + 1)
+            end
+        end
+        string = join(["e$i" for i in indices], "")
+        return (Set(indices), string)
+    end
+    return [element_string(i) for i = 0:2^n-1]
+end
+
+function max_n(vector::GrassmannVector{T}) where {T}
+    n = 0
+    for (basis_element, coefficient) in vector.data
+        n = max(n, maximum(basis_element))
+    end
+    return n
+end
+
+# show GrassmannVector
+function Base.show(io::IO, vector::GrassmannVector{T}) where {T}
+    _grassmann_basis = grassmann_basis(max_n(vector))
+    print_vector(io, vector.data, _grassmann_basis)
 end
 end
