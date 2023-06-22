@@ -1,7 +1,7 @@
 module Grassmann
 export GrassmannVector, basis
 
-import Base: zero, one, -, +, *, eltype
+import Base: zero, one, -, +, *, eltype, ==
 include("./lib/print_vector.jl")
 
 struct GrassmannVector{T}
@@ -143,7 +143,10 @@ function maximum_index(vector::GrassmannVector{T}) where {T}
     return n
 end
 
-# show GrassmannVector
+function Base.:(==)(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where {T}
+    return vector1.data == vector2.data
+end
+
 function Base.show(io::IO, vector::GrassmannVector{T}) where {T}
     print_vector(io, vector.data, basis(maximum_index(vector), String))
 end
