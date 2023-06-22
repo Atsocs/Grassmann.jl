@@ -1,5 +1,5 @@
-struct GrassmannVector{S,T}
-    data::Dict{Set{S},T}
+struct GrassmannVector{T}
+    data::Dict{Set{Int},T}
 end
 
 function simplify!(vector_data)
@@ -10,16 +10,16 @@ function simplify!(vector_data)
     end
 end
 
-function Base.zero(::Type{GrassmannVector{S,T}}) where {S,T}
-    GrassmannVector{S,T}(Dict{Set{S},T}())
+function Base.zero(::Type{GrassmannVector{T}}) where {T}
+    GrassmannVector{T}(Dict{Set{Int},T}())
 end
 
-function Base.one(::Type{GrassmannVector{S,T}}) where {S,T}
-    data = Dict{Set{S},T}(Set{S}() => one(T))
-    return GrassmannVector{S,T}(data)
+function Base.one(::Type{GrassmannVector{T}}) where {T}
+    data = Dict{Set{Int},T}(Set{Int}() => one(T))
+    return GrassmannVector{T}(data)
 end
 
-function Base.:+(vector1::GrassmannVector{S,T}, vector2::GrassmannVector{S,T}) where {S,T}
+function Base.:+(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where {T}
     result_data = copy(vector1.data)
 
     for (basis_element, coefficient) in vector2.data
@@ -28,11 +28,11 @@ function Base.:+(vector1::GrassmannVector{S,T}, vector2::GrassmannVector{S,T}) w
 
     simplify!(result_data)
 
-    return GrassmannVector{S,T}(result_data)
+    return GrassmannVector{T}(result_data)
 end
 
-get_sign(a1::Set{S}, a2::Set{S}) where {S} = get_sign(sort!(collect(a1)), sort!(collect(a2)))
-function get_sign(a1::Vector{S}, a2::Vector{S}) where {S}
+get_sign(a1::Set, a2::Set) = get_sign(sort!(collect(a1)), sort!(collect(a2)))
+function get_sign(a1::Vector, a2::Vector)
     exchanges = 0
     i = 1
     j = 1
@@ -53,8 +53,8 @@ function get_sign(a1::Vector{S}, a2::Vector{S}) where {S}
 end
 
 
-function Base.:*(vector1::GrassmannVector{S,T}, vector2::GrassmannVector{S,T}) where {S,T}
-    result_data = Dict{Set{S},T}()
+function Base.:*(vector1::GrassmannVector{T}, vector2::GrassmannVector{T}) where {T}
+    result_data = Dict{Set{Int},T}()
 
     for (basis_element1, coefficient1) in vector1.data
         for (basis_element2, coefficient2) in vector2.data
@@ -72,10 +72,10 @@ function Base.:*(vector1::GrassmannVector{S,T}, vector2::GrassmannVector{S,T}) w
 
     simplify!(result_data)
 
-    return GrassmannVector{S,T}(result_data)
+    return GrassmannVector{T}(result_data)
 end
 
-function basis(n::Int)
+function basis(n::Int, T=Float64)
     @assert n ≥ 0 || error("n should be ≥ 0")
-    return [GrassmannVector{Int,Float64}(Dict(Set([i]) => 1.0)) for i = 1:n]
+    return [GrassmannVector{T}(Dict(Set([i]) => one(T))) for i = 1:n]
 end
