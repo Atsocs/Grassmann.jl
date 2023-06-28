@@ -1,6 +1,7 @@
 module Grassmann
 export GrassmannVector, basis
 
+import LinearAlgebra: rank
 import Base: zero, one, -, +, *, eltype, ==
 include("./lib/print_vector.jl")
 
@@ -22,6 +23,10 @@ function simplify!(vector_data)
 end
 
 function Base.zero(::Type{GrassmannVector{T}}) where {T}
+    return GrassmannVector{T}()
+end
+
+function Base.zero(::GrassmannVector{T}) where {T}
     return GrassmannVector{T}()
 end
 
@@ -149,5 +154,30 @@ end
 
 function Base.show(io::IO, vector::GrassmannVector{T}) where {T}
     print_vector(io, vector.data, basis(maximum_index(vector), String))
+end
+
+function Base.getindex(vector::GrassmannVector{T}, basis_element::Set{Int}) where {T}
+    return get(vector.data, basis_element, zero(T))
+end
+
+function annihilator_dimension(vector::GrassmannVector{T}) where {T}
+    if iszero(vector)
+        return Inf
+    end
+    support = sort!(collect(union(keys(vector.data)...)))
+    n = maximum(support)
+    e = basis(n)
+    coeffs = [vector * e[i] for i in support]
+    gbasis = collect(union([keys(c.data) for c in coeffs]...))
+    coeffs, gbasis
+    matrix = zeros(T, length(gbasis), length(support))
+    for i = eachindex(gbasis), j = eachindex(support)
+        matrix[i, j] = coeffs[j][gbasis[i]]
+    end
+    length(support) - rank(matrix)
+end
+
+function isimage(vector::GrassmannVector{T}) where {T}
+    return annihilator_dimension(vector) > 0
 end
 end
