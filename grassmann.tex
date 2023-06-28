@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[a4paper]{geometry}
+
+\usepackage[brazil]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\usepackage{mathtools}
+\newcommand{\N}{\mathbb{N}}
+
+\newtheorem*{theorem}{Teorema}
+\newtheorem*{corollary}{Corolário}
+\newtheorem*{definition}{Definição}
+\newtheorem*{example}{Exemplo}
+
+\begin{document}
+\begin{theorem}
+    Seja $z \in E(V)$, e suponha que exista $v \in V \setminus \{0\}$ tal que $vz = 0$. Então, existe $u \in E(V)$ tal que $z = uv$.
+    \begin{proof}
+        Complete $\{v\}$ para uma base $\{e_1 = v, e_2, e_3, \dots\}$ de $V$. Seja $\lambda_A$ o coeficiente de $e_A = \prod_{a \in A} e_i$ em $z$, de modo que $z = \sum_{A \subset \N} \lambda_{A} e_{A}$. Cada $e_A$ é tal que os índices das componentes estão em ordem crescente. Como $e_1 z = 0$, segue que $\lambda_A = 0$ para todo $A \subset \N$ tal que $1 \not\in A$. Daí,
+        \[
+            z = \sum_{A \subset \N \setminus \{1\}} \lambda_A \cdot e_1 \cdot e_{A \setminus \{1\}} = \left(\sum_{A \subset \N \setminus \{1\}} \lambda_A \cdot {(-1)}^{|A \setminus \{1\}|}  \cdot e_{A \setminus \{1\}}\right) e_1 = uv.
+        \]
+    \end{proof}
+\end{theorem}
+\begin{corollary}
+    Em particular, se $z \in E_0(V)$, então $z$ está na imagem do comutador se, e somente se, existe $w \in V \setminus \{0\}$ tal que $wz = 0$.
+    \begin{proof}
+        Se $z = [u, v]$, podemos escrever $u = u_0 + u_1$ e $v = v_0 + v_1$ onde $u_0, v_0 \in E_0(V)$ e $u_1, v_1 \in E_1(V)$. Daí, $z = [u_1, v_1] = 2u_1 v_1$. Caso $v_1 = 0$, temos $z = 0$. Tome $w \neq 0$ qualquer em $V$ e temos $wz = 0$. Se $v_1 \neq 0$, temos $v_1 z = -2 u_1 v_1 v_1 = 0$.
+
+        Reciprocamente, se $wz = 0$ para algum $w \neq 0$, então $z = uv$ para algum $u \in E(V)$, pelo teorema. Escrevemos $u = u_0 + u_1$ onde $u_0 \in E_0(V)$ e $u_1 \in E_1(V)$. Daí, $z = u_0 v + u_1 v$. Projetando em $E_0(V)$, segue que $z = u_1 v =  \left [ \frac12u_1, v \right ]$.
+    \end{proof}
+\end{corollary}
+\begin{definition}
+    Dizemos que $z \in E(V)$ é \emph{aniquilável} se existe $v \in V \setminus \{0\}$ tal que $vz = 0$.
+\end{definition}
+
+\begin{example}
+    $e_1e_2 + e_3e_4 \in E_0(V)$ não é aniquilável.
+\end{example}
+
+Vamos agora definir condições necessárias e suficientes para que $z \in E(V)$ seja aniquilável.
+
+\[
+    v = \sum_{j \in \N} x_j e_j
+\]
+\[
+    z = \sum_{A \subset \N} \lambda_A e_A
+\]
+\[
+    0 = vz = \sum_{A \subset \N} \lambda_A \sum_{j \in \N} x_j e_j e_A = \sum_{A \subset \N} \sum_{j \in \N \setminus A} \lambda_A \cdot s(\{j\}, A) \cdot  e_{j \sqcup A} \cdot x_j = \sum_{B \subset \N} \gamma_B e_B
+\]
+
+\[
+    0 = \gamma_B = \sum_{\{j\} \sqcup A = B} \lambda_A \cdot s(\{j\}, A) \cdot x_j
+\]
+
+Seja $m_{A, j} = \lambda_A \cdot s(\{j\}, A)$, e seja $M$ a matriz infinita cujas linhas são indexadas por $A \subset \N$ e cujas colunas são indexadas por $j \in \N$ e cujos elementos são $m_{A, j}$. Seja $v = (x_1, x_2, \dots)$ o vetor coluna infinito cujos elementos são $x_j$. Então, para que $z$ seja aniquilável, é necessário e suficiente que o núcleo de $M$ seja não trivial.
+
+\end{document}
