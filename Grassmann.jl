@@ -115,6 +115,10 @@ end
 
 Base.eltype(::Type{GrassmannVector{T}}) where {T} = T
 
+function e(n::Int, T=Float64)
+    return GrassmannVector{T}(Dict(Set([n]) => one(T)))
+end
+
 function basis(n::Int, T=Float64)
     @assert n ≥ 0 || error("n should be ≥ 0")
     return [GrassmannVector{T}(Dict(Set([i]) => one(T))) for i = 1:n]
